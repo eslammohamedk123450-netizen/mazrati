@@ -16,7 +16,8 @@ env:
 jobs:
   build-apk:
     name: Build release APK
-    runs-on: ubuntu-latest
+    # استخدم pool مختلفًا عن ubuntu-latest عند ازدحام runners العامّة.
+    runs-on: ubuntu-22.04
     timeout-minutes: 45
 
     steps:
