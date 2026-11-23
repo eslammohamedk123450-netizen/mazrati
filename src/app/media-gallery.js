@@ -3,7 +3,7 @@
  * معرض الوسائط (صور وأصوات مرتبطة بالعناصر والأحداث)
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -13,9 +13,9 @@ import {
   Image,
   Pressable,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
 import { Audio } from 'expo-av';
 import { useTheme } from '../contexts/ThemeContext';
 import { useItems } from '../contexts/ItemsContext';
@@ -24,7 +24,7 @@ import { useReminders } from '../contexts/RemindersContext';
 
 const MediaGalleryScreen = () => {
   const { theme } = useTheme();
-  const { getItemsByCategory, items } = useItems();
+  const { items } = useItems();
   const { events } = useEvents();
   const { reminders } = useReminders();
   const router = useRouter();
@@ -37,7 +37,7 @@ const MediaGalleryScreen = () => {
   const [loadingMedia, setLoadingMedia] = useState(false);
 
   // تجميع الوسائط
-  const mediaItems = React.useMemo(() => {
+  const mediaItems = useMemo(() => {
     const result = [];
 
     items.forEach((item) => {

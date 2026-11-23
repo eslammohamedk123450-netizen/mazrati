@@ -4,9 +4,10 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MOCK_CATEGORIES, MOCK_ITEMS } from './mockData';
+import { MOCK_CATEGORIES } from './mockData';
 
 const STORAGE_KEY = '@mazrati_categories';
+const ITEMS_STORAGE_KEY = '@mazrati_items';
 const SEEDED_KEY = '@mazrati_categories_seeded';
 
 // تهيئة البيانات (seeding) عند أول تشغيل
@@ -27,7 +28,15 @@ export const getCategories = async () => {
   await seedCategories();
   try {
     const data = await AsyncStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : [...MOCK_CATEGORIES];
+    const categories = data ? JSON.parse(data) : [...MOCK_CATEGORIES];
+    const rawItems = await AsyncStorage.getItem(ITEMS_STORAGE_KEY);
+    const items = rawItems ? JSON.parse(rawItems) : [];
+    return categories.map((category) => ({
+      ...category,
+      itemCount: Array.isArray(items)
+        ? items.filter((item) => item.categoryId === category.id).length
+        : 0,
+    }));
   } catch (error) {
     console.error('Failed to get categories:', error);
     return [...MOCK_CATEGORIES];
@@ -86,8 +95,9 @@ export const deleteCategory = async (id) => {
 
 // عدد العناصر في قسم
 export const getCategoryItemCount = async (categoryId) => {
-  // MOCK_ITEMS is the source; in future, read from item service
-  return MOCK_ITEMS.filter((i) => i.categoryId === categoryId).length;
+  const rawItems = await AsyncStorage.getItem(ITEMS_STORAGE_KEY);
+  const items = rawItems ? JSON.parse(rawItems) : [];
+  return Array.isArray(items) ? items.filter((item) => item.categoryId === categoryId).length : 0;
 };
 
 // إحصائيات الأقسام

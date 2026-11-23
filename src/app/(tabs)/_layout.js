@@ -51,6 +51,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="items"
+        options={{
+          title: 'العناصر',
+          tabBarIcon: ({ color }) => <TabIcon icon="📦" />,
+        }}
+      />
+      <Tabs.Screen
         name="calendar"
         options={{
           title: 'التقويم',
